@@ -1,0 +1,19 @@
+name: Find and Build
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: List files in Root (DEBUG)
+        run: ls -F
+
+      - name: Build with Gradle
+        # فعلاً working-directory را حذف کردیم تا ببینیم فایل‌ها کجاست
+        run: ./gradlew assembleDebug --stacktrace
