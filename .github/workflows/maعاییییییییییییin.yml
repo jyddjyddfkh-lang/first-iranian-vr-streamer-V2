@@ -1,0 +1,28 @@
+name: Android Build (Auto-Detect)
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Find and Build
+        run: |
+          echo "--- Searching for gradlew ---"
+          # پیدا کردن مسیر دقیق فایلی که نامش gradlew است
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          
+          if [ -z 
