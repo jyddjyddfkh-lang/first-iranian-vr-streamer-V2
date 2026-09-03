@@ -1,0 +1,45 @@
+name: Build IranianVRStreamer Android Client
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ۱. دریافت کد از مخزن گیت‌هاب
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # ۲. تنظیم محیط جاوا (نسخه ۱۷ برای اندروید مدرن)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # ۳. تنظیم اندروید SDK و NDK (بسیار حیاتی برای کدهای C++)
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      # ۴. دادن اجازه اجرای دستورات Gradle
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # ۵. اجرای فرآیند بیلد (ساخت نسخه Debug)
+      # از --stacktrace استفاده می‌کنیم تا اگر شکست خورد، دلیلش را دقیقاً در لاگ ببینیم
+      - name: Build with Gradle
+        run: ./gradlew assembleDebug --stacktrace
+
+      # ۶. آپلود فایل APK ساخته شده برای دانلود شما
+      - name: Upload APK Artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IranianVRStreamer-Quest-Client-Debug
+          path: app/build/outputs/apk/debug/*.apk
