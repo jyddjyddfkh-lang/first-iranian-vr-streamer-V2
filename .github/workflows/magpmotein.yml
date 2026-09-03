@@ -1,0 +1,43 @@
+name: Android Build (Final Attempt)
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Check Directory Structure
+        run: |
+          echo "Current directory content:"
+          ls -F
+          echo "Searching for project folder..."
+          find . -maxdepth 2 -type d
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        run: |
+          # این بخش به صورت خودکار پوشه درست را پیدا می‌کند
+          # و بدون نیاز به gradlew، پروژه را بیلد می‌کند
+          cd $(find . -name "build.gradle" -exec dirname {} \; | head -n 1)
+          gradle assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: QuestClient-Debug
+          path: "**/app/build/outputs/apk/debug/*.apk"
