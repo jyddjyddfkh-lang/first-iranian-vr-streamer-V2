@@ -1,0 +1,12 @@
+name: Debug Path
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: List all files
+        run: ls -R
