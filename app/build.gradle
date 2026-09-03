@@ -1,0 +1,26 @@
+plugins {
+    id 'com.android.application'
+}
+android {
+    namespace 'com.iranvr.streamer'
+    compileSdk 34
+    defaultConfig {
+        applicationId "com.iranvr.streamer"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+        externalNativeBuild {
+            cmake { cppFlags "-std=c++17" }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake { path "src/main/cpp/CMakeLists.txt" }
+    }
+}

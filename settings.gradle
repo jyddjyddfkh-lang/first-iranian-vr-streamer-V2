@@ -1,0 +1,2 @@
+rootProject.name = 'IranianVRStreamer_Quest_Client'
+include ':app'
