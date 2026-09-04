@@ -1,0 +1,50 @@
+name: Android Build (Auto-Detect)
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Find and Build
+        run: |
+          echo "--- Searching for gradlew ---"
+          # پیدا کردن مسیر دقیق فایلی که نامش gradlew است
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo "ERROR: gradlew NOT FOUND anywhere in the repository!"
+            echo "Current directory structure:"
+            ls -R
+            exit 1
+          fi
+          
+          echo "FOUND gradlew at: $GRADLEW_PATH"
+          
+          # رفتن به پوشه‌ای که gradlew در آن قرار دارد
+          cd $(dirname "$GRADLEW_PATH")
+          
+          # دادن مجوز اجرا
+          chmod +x gradlew
+          
+          # اجرای بیلد
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: QuestClient-Debug
+          path: "**/app/build/outputs/apk/debug/*.apk"
